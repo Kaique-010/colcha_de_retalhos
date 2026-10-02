@@ -47,7 +47,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         ]
 
 
-class UsuarioCriarSerializer(serializers.Serializer):
+"""class UsuarioCriarSerializer(serializers.Serializer):
 
     username = serializers.CharField(
         max_length=150,
@@ -87,7 +87,7 @@ class UsuarioCriarSerializer(serializers.Serializer):
             )
 
         return value.strip()
-
+"""
 
 class LogoutSerializer(serializers.Serializer):
 

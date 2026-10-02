@@ -5,7 +5,6 @@ from rest_framework import viewsets, status
 from django.contrib.auth.models import User
 from .serializers import (
     LogoutSerializer,
-    UsuarioCriarSerializer,
     UsuarioSerializer,
     LoginSerializer,
 )

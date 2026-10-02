@@ -16,7 +16,11 @@ class CadastroView(APIView):
         serializer.is_valid(raise_exception=True)
 
         usuario = CadastroService.criar_usuario(
-            **serializer.validated_data
+            username=serializer.validated_data["username"],
+            first_name=serializer.validated_data["first_name"],
+            last_name=serializer.validated_data["last_name"],
+            email=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
         )
 
         return Response(
