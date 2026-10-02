@@ -1,0 +1,24 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Django
+.env
+*.log
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db

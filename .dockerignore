@@ -1,0 +1,25 @@
+venv/
+.venv/
+env/
+.git/
+.gitignore
+.idea/
+.vscode/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.log
+.env
+.env.*
+node_modules/
+media/
+staticfiles/
+*.sqlite3
+*.dump
+*.sql
+*.zip
+.pytest_cache/
+.mypy_cache/
+# Front (React Native roda fora do container)
+frontend/
