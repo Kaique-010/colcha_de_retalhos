@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import transaction
-
+from core.exceptions.exceptions import DuplicateResourceException
 from ..models import Perfil
 
 
@@ -47,9 +47,13 @@ class UsuarioService:
             last_name=UsuarioService._formatar_nome(last_name),
         )
 
+        if usuario.username in Perfil.objects.values_list("username", flat=True):
+            raise DuplicateResourceException()
+
         Perfil.objects.create(
             usuario=usuario,
             telefone=telefone.strip(),
         )
+        
 
         return usuario

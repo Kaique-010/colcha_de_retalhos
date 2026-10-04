@@ -18,6 +18,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 
+    "EXCEPTION_HANDLER": "core.exceptions.handlers.api_exception_handler",
+    
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),

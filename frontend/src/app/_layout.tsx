@@ -1,15 +1,17 @@
 import { Stack } from 'expo-router'
+import { AuthProvider } from '../contextos/AuthContext'
+import { ToastProvider } from '../contextos/ToastContext'
 
-import { AuthProvider } from '../../src/contextos/AuthContext'
-
-export default function Layout() {
+export default function RootLayout() {
   return (
     <AuthProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      />
+      <ToastProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        />
+      </ToastProvider>
     </AuthProvider>
   )
 }

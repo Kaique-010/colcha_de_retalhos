@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import {
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -13,14 +12,18 @@ import {
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
-
 import { MotiText, MotiView } from 'moti'
 import { router } from 'expo-router'
+
 import { useAuth } from '../../contextos/AuthContext'
+import { useToast } from '../../contextos/ToastContext'
+
 import { cores } from '../../estilos/cores'
+import { getApiError } from '../../servicos/apiError'
 
 export default function LoginScreen() {
   const { login } = useAuth()
+  const { mostrarToast } = useToast()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -29,7 +32,10 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!username.trim() || !password) {
-      Alert.alert('Atenção', 'Informe usuário e senha.')
+      mostrarToast(
+        'Informe usuário e senha.',
+        'erro',
+      )
 
       return
     }
@@ -37,11 +43,29 @@ export default function LoginScreen() {
     try {
       setCarregando(true)
 
-      await login(username.trim(), password)
-    } catch (erro: any) {
-      console.log('Erro no login:', erro?.response?.data ?? erro)
+      await login(
+        username.trim(),
+        password,
+      )
 
-      Alert.alert('Não foi possível entrar', 'Usuário ou senha inválidos.')
+      mostrarToast(
+        'Login realizado com sucesso.',
+        'sucesso',
+      )
+
+      router.replace('/inicio')
+    } catch (erro) {
+      const apiError = getApiError(erro)
+
+      console.log(
+        'Erro no login:',
+        apiError,
+      )
+
+      mostrarToast(
+        apiError.message,
+        'erro',
+      )
     } finally {
       setCarregando(false)
     }
@@ -49,13 +73,24 @@ export default function LoginScreen() {
 
   return (
     <LinearGradient
-      colors={[cores.rosaClaro, '#F7F4FC', cores.azulClaro]}
+      colors={[
+        cores.rosaClaro,
+        '#F7F4FC',
+        cores.azulClaro,
+      ]}
       locations={[0, 0.48, 1]}
-      style={styles.container}>
+      style={styles.container}
+    >
       <KeyboardAvoidingView
         style={styles.teclado}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        behavior={
+          Platform.OS === 'ios'
+            ? 'padding'
+            : undefined
+        }
+      >
         <View style={styles.conteudo}>
+
           {/* Logo / título */}
 
           <MotiView
@@ -73,9 +108,12 @@ export default function LoginScreen() {
               type: 'spring',
               duration: 900,
             }}
-            style={styles.cabecalho}>
+            style={styles.cabecalho}
+          >
             <View style={styles.logo}>
-              <Text style={styles.logoTexto}>CR</Text>
+              <Text style={styles.logoTexto}>
+                CR
+              </Text>
             </View>
 
             <MotiText
@@ -90,7 +128,8 @@ export default function LoginScreen() {
               transition={{
                 delay: 250,
               }}
-              style={styles.titulo}>
+              style={styles.titulo}
+            >
               Colcha de Retalhos
             </MotiText>
 
@@ -104,8 +143,10 @@ export default function LoginScreen() {
               transition={{
                 delay: 450,
               }}
-              style={styles.subtitulo}>
-              Um espaço para compartilhar, acolher e caminhar juntos.
+              style={styles.subtitulo}
+            >
+              Um espaço para compartilhar,
+              acolher e caminhar juntos.
             </MotiText>
           </MotiView>
 
@@ -125,24 +166,35 @@ export default function LoginScreen() {
               type: 'timing',
               duration: 700,
             }}
-            style={styles.cartao}>
-            <Text style={styles.tituloFormulario}>Bem-vindo</Text>
+            style={styles.cartao}
+          >
+            <Text style={styles.tituloFormulario}>
+              Bem-vindo
+            </Text>
 
-            <Text style={styles.textoFormulario}>Entre para continuar</Text>
+            <Text style={styles.textoFormulario}>
+              Entre para continuar
+            </Text>
 
             {/* Usuário */}
 
             <View style={styles.grupo}>
-              <Text style={styles.label}>Usuário</Text>
+              <Text style={styles.label}>
+                Usuário
+              </Text>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.icone}>@</Text>
+                <Text style={styles.icone}>
+                  @
+                </Text>
 
                 <TextInput
                   value={username}
                   onChangeText={setUsername}
                   placeholder="Digite seu usuário"
-                  placeholderTextColor={cores.textoSecundario}
+                  placeholderTextColor={
+                    cores.textoSecundario
+                  }
                   autoCapitalize="none"
                   autoCorrect={false}
                   editable={!carregando}
@@ -154,25 +206,39 @@ export default function LoginScreen() {
             {/* Senha */}
 
             <View style={styles.grupo}>
-              <Text style={styles.label}>Senha</Text>
+              <Text style={styles.label}>
+                Senha
+              </Text>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.icone}>•</Text>
+                <Text style={styles.icone}>
+                  •
+                </Text>
 
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
                   placeholder="Digite sua senha"
-                  placeholderTextColor={cores.textoSecundario}
+                  placeholderTextColor={
+                    cores.textoSecundario
+                  }
                   secureTextEntry={!mostrarSenha}
                   autoCapitalize="none"
                   editable={!carregando}
                   style={styles.input}
                 />
 
-                <Pressable onPress={() => setMostrarSenha((valor) => !valor)}>
+                <Pressable
+                  onPress={() =>
+                    setMostrarSenha(
+                      (valor) => !valor,
+                    )
+                  }
+                >
                   <Text style={styles.mostrarSenha}>
-                    {mostrarSenha ? 'Ocultar' : 'Mostrar'}
+                    {mostrarSenha
+                      ? 'Ocultar'
+                      : 'Mostrar'}
                   </Text>
                 </Pressable>
               </View>
@@ -185,32 +251,62 @@ export default function LoginScreen() {
                 scale: 0.96,
               }}
               animate={{
-                scale: carregando ? 0.98 : 1,
+                scale: carregando
+                  ? 0.98
+                  : 1,
               }}
               transition={{
                 type: 'timing',
                 duration: 150,
-              }}>
+              }}
+            >
               <Pressable
                 onPress={handleLogin}
                 disabled={carregando}
-                style={[styles.botao, carregando && styles.botaoDesabilitado]}>
+                style={[
+                  styles.botao,
+                  carregando &&
+                    styles.botaoDesabilitado,
+                ]}
+              >
                 {carregando ? (
                   <View style={styles.carregando}>
-                    <ActivityIndicator color={cores.branco} />
+                    <ActivityIndicator
+                      color={cores.branco}
+                    />
 
-                    <Text style={styles.textoBotao}>Entrando...</Text>
+                    <Text
+                      style={styles.textoBotao}
+                    >
+                      Entrando...
+                    </Text>
                   </View>
                 ) : (
-                  <Text style={styles.textoBotao}>Entrar</Text>
+                  <Text
+                    style={styles.textoBotao}
+                  >
+                    Entrar
+                  </Text>
                 )}
               </Pressable>
+
               <Pressable
-                onPress={() => router.push('/cadastro')}
-                style={styles.botaoCadastro}>
-                <Text style={styles.textoCadastro}>
+                onPress={() =>
+                  router.push('/cadastro')
+                }
+                style={styles.botaoCadastro}
+              >
+                <Text
+                  style={styles.textoCadastro}
+                >
                   Não possui uma conta?{' '}
-                  <Text style={styles.destaqueCadastro}>Criar cadastro</Text>
+                  <Text
+                    style={
+                      styles.destaqueCadastro
+                    }
+                  >
+                    Criar cadastro
+                  </Text>
                 </Text>
               </Pressable>
             </MotiView>
@@ -228,9 +324,11 @@ export default function LoginScreen() {
             transition={{
               delay: 1000,
             }}
-            style={styles.rodape}>
+            style={styles.rodape}
+          >
             Colcha de Retalhos © 2026
           </MotiText>
+
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -252,6 +350,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
 
+  // =========================
+  // CABEÇALHO
+  // =========================
+
   cabecalho: {
     alignItems: 'center',
     marginBottom: 28,
@@ -265,7 +367,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
 
-    backgroundColor: 'rgba(255,255,255,0.72)',
+    backgroundColor:
+      'rgba(255,255,255,0.72)',
 
     borderWidth: 1,
     borderColor: cores.borda,
@@ -295,8 +398,13 @@ const styles = StyleSheet.create({
     maxWidth: 300,
   },
 
+  // =========================
+  // CARD
+  // =========================
+
   cartao: {
-    backgroundColor: 'rgba(255,255,255,0.78)',
+    backgroundColor:
+      'rgba(255,255,255,0.78)',
 
     borderRadius: 26,
 
@@ -306,10 +414,12 @@ const styles = StyleSheet.create({
     borderColor: cores.borda,
 
     shadowColor: '#000',
+
     shadowOffset: {
       width: 0,
       height: 12,
     },
+
     shadowOpacity: 0.08,
     shadowRadius: 25,
 
@@ -328,6 +438,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 22,
   },
+
+  // =========================
+  // INPUTS
+  // =========================
 
   grupo: {
     marginBottom: 16,
@@ -376,6 +490,10 @@ const styles = StyleSheet.create({
     color: '#7770B8',
   },
 
+  // =========================
+  // BOTÃO
+  // =========================
+
   botao: {
     height: 54,
 
@@ -392,14 +510,17 @@ const styles = StyleSheet.create({
   botaoDesabilitado: {
     opacity: 0.65,
   },
+
   botaoCadastro: {
     height: 50,
+
     borderRadius: 15,
 
     alignItems: 'center',
     justifyContent: 'center',
 
-    backgroundColor: 'rgba(255,255,255,0.55)',
+    backgroundColor:
+      'rgba(255,255,255,0.55)',
 
     borderWidth: 1,
     borderColor: '#7C6BC4',
@@ -429,6 +550,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
   },
+
+  // =========================
+  // RODAPÉ
+  // =========================
 
   rodape: {
     textAlign: 'center',

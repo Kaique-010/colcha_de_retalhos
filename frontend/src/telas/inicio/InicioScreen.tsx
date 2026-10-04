@@ -1,14 +1,21 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+
 import { router, Href } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useEffect, useState, useCallback } from 'react'
 
 import { useAuth } from '../../contextos/AuthContext'
+import { useToast } from '../../contextos/ToastContext'
+
 import CardMenu from '../../componentes/CardMenu'
 import ReflexaoDiariaCard from '../../componentes/ReflexaoDiariaCard'
-import { buscarReflexaoDeHoje, ReflexaoDiaria } from '../../servicos/reflexoes'
-import { buscarResumoMetricas, ResumoMetricas } from '../../servicos/metricas'
 import { MetricasCard } from '../../componentes/metricas/MetricasCard'
+
+import { buscarReflexaoDeHoje, ReflexaoDiaria } from '../../servicos/reflexoes'
+
+import { buscarResumoMetricas, ResumoMetricas } from '../../servicos/metricas'
+
+import { getApiError } from '../../servicos/apiError'
 
 type IconeNome = keyof typeof MaterialCommunityIcons.glyphMap
 
@@ -48,13 +55,23 @@ const opcoes: OpcaoMenu[] = [
 
 export default function InicioScreen() {
   const { usuario, logout } = useAuth()
+  const { mostrarToast } = useToast()
+
   const [resumoMetricas, setResumoMetricas] = useState<ResumoMetricas | null>(
     null,
   )
 
   const [carregandoMetricas, setCarregandoMetricas] = useState(true)
+
   const [reflexao, setReflexao] = useState<ReflexaoDiaria | null>(null)
+
   const [carregandoReflexao, setCarregandoReflexao] = useState(true)
+
+  /*
+   * =========================
+   * MÉTRICAS
+   * =========================
+   */
 
   const carregarMetricas = useCallback(async () => {
     try {
@@ -63,45 +80,102 @@ export default function InicioScreen() {
       const dados = await buscarResumoMetricas()
 
       setResumoMetricas(dados)
-    } catch (erro: any) {
-      if (erro?.response?.status === 404) {
+    } catch (erro) {
+      /*
+       * Se não existem métricas ainda,
+       * não é exatamente um erro para o usuário.
+       */
+      if (
+        typeof erro === 'object' &&
+        erro !== null &&
+        'response' in erro &&
+        (erro as any).response?.status === 404
+      ) {
         setResumoMetricas(null)
         return
       }
 
-      console.error('Erro ao carregar métricas:', erro)
+      const apiError = getApiError(erro)
+
+      console.error('Erro ao carregar métricas:', apiError)
+
+      mostrarToast(apiError.message, 'erro')
     } finally {
       setCarregandoMetricas(false)
     }
-  }, [])
+  }, [mostrarToast])
+
   useEffect(() => {
     carregarMetricas()
   }, [carregarMetricas])
 
+  /*
+   * =========================
+   * REFLEXÃO DIÁRIA
+   * =========================
+   */
+
   useEffect(() => {
     async function carregarReflexao() {
       try {
+        setCarregandoReflexao(true)
+
         const dados = await buscarReflexaoDeHoje()
+
         setReflexao(dados)
-      } catch {
+      } catch (erro) {
+        const apiError = getApiError(erro)
+
+        console.error('Erro ao carregar reflexão:', apiError)
+
         setReflexao(null)
+
+        mostrarToast(apiError.message, 'erro')
       } finally {
         setCarregandoReflexao(false)
       }
     }
 
     carregarReflexao()
-  }, [])
+  }, [mostrarToast])
+
+  /*
+   * =========================
+   * LOGOUT
+   * =========================
+   */
+
+  async function handleLogout() {
+    try {
+      await logout()
+
+      mostrarToast('Você saiu da sua conta.', 'sucesso')
+
+      /*
+       * Só faça isso aqui se o AuthContext
+       * NÃO estiver fazendo a navegação.
+       */
+      router.replace('/login')
+    } catch (erro) {
+      const apiError = getApiError(erro)
+
+      console.error('Erro ao sair:', apiError)
+
+      mostrarToast(apiError.message, 'erro')
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={logout} style={styles.botaoSair}>
+      <Pressable onPress={handleLogout} style={styles.botaoSair}>
         <Text style={styles.textoBotao}>Sair</Text>
       </Pressable>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.conteudo}>
+        {/* CABEÇALHO */}
+
         <View style={styles.cabecalho}>
           <Text style={styles.titulo}>
             Olá, {usuario?.first_name || usuario?.username}
@@ -110,11 +184,15 @@ export default function InicioScreen() {
           <Text style={styles.subtitulo}>O que você deseja fazer hoje?</Text>
         </View>
 
+        {/* MÉTRICAS */}
+
         <MetricasCard
           resumo={resumoMetricas}
           carregando={carregandoMetricas}
           aoAtualizar={carregarMetricas}
         />
+
+        {/* REFLEXÃO */}
 
         <View style={styles.secaoReflexao}>
           {carregandoReflexao && (
@@ -131,6 +209,8 @@ export default function InicioScreen() {
             </Text>
           )}
         </View>
+
+        {/* MENU */}
 
         <View style={styles.grade}>
           {opcoes.map((opcao) => (
@@ -178,13 +258,6 @@ const styles = StyleSheet.create({
 
   secaoReflexao: {
     marginBottom: 26,
-  },
-
-  tituloSecao: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#242424',
-    marginBottom: 12,
   },
 
   textoCarregando: {

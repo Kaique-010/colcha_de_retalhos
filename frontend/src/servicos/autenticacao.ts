@@ -2,7 +2,6 @@ import { clienteApi } from '../api/cliente'
 import {
   salvarTokens,
   obterRefreshToken,
-  limparTokens,
 } from '../armazenamento/autenticacao'
 
 interface LoginDados {
@@ -33,12 +32,17 @@ interface CadastroDados {
 }
 
 export async function fazerCadastro(dados: CadastroDados) {
-  const resposta = await clienteApi.post('/autenticacao/cadastro/', dados)
+  const resposta = await clienteApi.post(
+    '/autenticacao/cadastro/',
+    dados,
+  )
 
   return resposta.data
 }
 
-export async function fazerLogin(dados: LoginDados) {
+export async function fazerLogin(
+  dados: LoginDados,
+) {
   const resposta = await clienteApi.post<LoginResposta>(
     '/autenticacao/login/',
     dados,
@@ -66,7 +70,6 @@ export async function renovarToken() {
   })
 
   const novoAccess = resposta.data.access
-
   const novoRefresh = resposta.data.refresh ?? refreshToken
 
   await salvarTokens(novoAccess, novoRefresh)
