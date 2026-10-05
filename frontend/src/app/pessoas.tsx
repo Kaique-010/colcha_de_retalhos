@@ -1,10 +1,7 @@
-import ModuloScreen from '../../src/telas/comum/ModuloScreen'
+// app/pessoas.tsx
+
+import PessoasScreen from '../../src/telas/usuarios/PessoasScreen'
 
 export default function Pessoas() {
-  return (
-    <ModuloScreen
-      titulo="Pessoas"
-      descricao="Gerencie os participantes do sistema."
-    />
-  )
+  return <PessoasScreen />
 }

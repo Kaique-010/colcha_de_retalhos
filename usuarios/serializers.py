@@ -17,6 +17,7 @@ class LoginSerializer(TokenObtainPairSerializer):
             "first_name": self.user.first_name,
             "last_name": self.user.last_name,
             "email": self.user.email,
+            "is_staff": self.user.is_staff,
         }
 
         return dados
@@ -43,9 +44,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "email",
+            "is_staff",
             "perfil",
         ]
-
 
 """class UsuarioCriarSerializer(serializers.Serializer):
 

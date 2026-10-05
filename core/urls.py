@@ -39,6 +39,10 @@ urlpatterns = [
     include("metricas.urls"),
     ),
     path(
+    "api/",
+    include("estudos.urls"),
+    ),
+    path(
         "api/schema/",
         SpectacularAPIView.as_view(),
         name="schema",

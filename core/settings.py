@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'reunioes',
     'reflexoes',
     "metricas",
+    "estudos",
 ]
 
 MIDDLEWARE = [

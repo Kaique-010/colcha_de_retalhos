@@ -1,10 +1,5 @@
-import ModuloScreen from '../../src/telas/comum/ModuloScreen'
+import EstudosScreen from '../../src/telas/estudos/EstudosScreen'
 
 export default function Estudos() {
-  return (
-    <ModuloScreen
-      titulo="Estudos"
-      descricao="Acesse materiais e conteúdos de estudo."
-    />
-  )
+  return <EstudosScreen />
 }

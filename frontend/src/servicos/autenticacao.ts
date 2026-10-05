@@ -1,8 +1,6 @@
 import { clienteApi } from '../api/cliente'
-import {
-  salvarTokens,
-  obterRefreshToken,
-} from '../armazenamento/autenticacao'
+import { salvarTokens, obterRefreshToken } from '../armazenamento/autenticacao'
+import { Usuario } from '../tipos/usuario'
 
 interface LoginDados {
   username: string
@@ -12,13 +10,7 @@ interface LoginDados {
 interface LoginResposta {
   access: string
   refresh: string
-  usuario: {
-    id: number
-    username: string
-    first_name: string
-    last_name: string
-    email: string
-  }
+  usuario: Usuario
 }
 
 interface CadastroDados {
@@ -32,17 +24,12 @@ interface CadastroDados {
 }
 
 export async function fazerCadastro(dados: CadastroDados) {
-  const resposta = await clienteApi.post(
-    '/autenticacao/cadastro/',
-    dados,
-  )
+  const resposta = await clienteApi.post('/autenticacao/cadastro/', dados)
 
   return resposta.data
 }
 
-export async function fazerLogin(
-  dados: LoginDados,
-) {
+export async function fazerLogin(dados: LoginDados) {
   const resposta = await clienteApi.post<LoginResposta>(
     '/autenticacao/login/',
     dados,
