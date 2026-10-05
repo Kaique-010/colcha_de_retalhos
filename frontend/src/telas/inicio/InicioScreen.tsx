@@ -1,4 +1,11 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from 'react-native'
 
 import { router, Href } from 'expo-router'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
@@ -170,7 +177,10 @@ export default function InicioScreen() {
       <Pressable onPress={handleLogout} style={styles.botaoSair}>
         <Text style={styles.textoBotao}>Sair</Text>
       </Pressable>
-
+      <Image
+        source={require('../../../assets/images/logo.png')}
+        style={styles.logoImagem}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.conteudo}>
@@ -178,7 +188,7 @@ export default function InicioScreen() {
 
         <View style={styles.cabecalho}>
           <Text style={styles.titulo}>
-            Olá, {usuario?.first_name || usuario?.username}
+            Olá, {usuario?.first_name || usuario?.username}!!!
           </Text>
 
           <Text style={styles.subtitulo}>O que você deseja fazer hoje?</Text>
@@ -241,7 +251,7 @@ const styles = StyleSheet.create({
   },
 
   cabecalho: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
 
   titulo: {
@@ -253,7 +263,14 @@ const styles = StyleSheet.create({
   subtitulo: {
     fontSize: 12,
     color: '#777',
-    marginTop: 8,
+    marginTop: 6,
+  },
+  logoImagem: {
+    width: 60,
+    height: 60,
+    marginTop: 20,
+    alignItems: 'center',
+    resizeMode: 'contain',
   },
 
   secaoReflexao: {

@@ -9,10 +9,8 @@ import {
 import { useEffect, useState } from 'react'
 import { router } from 'expo-router'
 
-import {
-  buscarCalendario,
-  DiaReuniao,
-} from '../../servicos/reunioes'
+import { buscarCalendario, DiaReuniao } from '../../servicos/reunioes'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function formatarData(data: string) {
   const [ano, mes, dia] = data.split('-')
@@ -23,11 +21,7 @@ function formatarData(data: string) {
 function formatarDiaSemana(data: string) {
   const [ano, mes, dia] = data.split('-')
 
-  const dataLocal = new Date(
-    Number(ano),
-    Number(mes) - 1,
-    Number(dia),
-  )
+  const dataLocal = new Date(Number(ano), Number(mes) - 1, Number(dia))
 
   return new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long',
@@ -80,10 +74,7 @@ export default function ReunioesScreen() {
 
         setDias(dados)
       } catch (error) {
-        console.error(
-          'Erro ao carregar calendário:',
-          error,
-        )
+        console.error('Erro ao carregar calendário:', error)
 
         setErro(true)
       } finally {
@@ -98,34 +89,30 @@ export default function ReunioesScreen() {
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.conteudo}
-      >
+        contentContainerStyle={styles.conteudo}>
         <View style={styles.cabecalho}>
-          <Pressable
-            onPress={() => router.back()}
-            style={styles.botaoVoltar}
-          >
-            <Text style={styles.textoVoltar}>
-              ← Voltar
-            </Text>
+          <Pressable onPress={() => router.back()} style={styles.botaoVoltar}>
+            <Text style={styles.textoVoltar}>← Voltar</Text>
           </Pressable>
 
           <Text style={styles.titulo}>
+            <MaterialCommunityIcons
+              name="calendar"
+              size={40}
+              marginHorizontal={8}
+              color="#e0b0d4ff"
+            />
             Reuniões
           </Text>
 
-          <Text style={styles.subtitulo}>
-            Confira as reuniões programadas
-          </Text>
+          <Text style={styles.subtitulo}>Confira as reuniões programadas</Text>
         </View>
 
         {carregando && (
           <View style={styles.estado}>
             <ActivityIndicator size="large" />
 
-            <Text style={styles.textoEstado}>
-              Carregando reuniões...
-            </Text>
+            <Text style={styles.textoEstado}>Carregando reuniões...</Text>
           </View>
         )}
 
@@ -139,27 +126,20 @@ export default function ReunioesScreen() {
 
         {!carregando && !erro && dias.length === 0 && (
           <View style={styles.estado}>
-            <Text style={styles.textoEstado}>
-              Nenhuma reunião programada.
-            </Text>
+            <Text style={styles.textoEstado}>Nenhuma reunião programada.</Text>
           </View>
         )}
 
         {!carregando &&
           !erro &&
           dias.map((dia) => (
-            <View
-              key={dia.data}
-              style={styles.dia}
-            >
+            <View key={dia.data} style={styles.dia}>
               <View style={styles.cabecalhoDia}>
                 <Text style={styles.nomeDia}>
                   {formatarDiaSemana(dia.data)}
                 </Text>
 
-                <Text style={styles.data}>
-                  {formatarData(dia.data)}
-                </Text>
+                <Text style={styles.data}>{formatarData(dia.data)}</Text>
               </View>
 
               {dia.programacoes.length === 0 && (
@@ -168,59 +148,42 @@ export default function ReunioesScreen() {
                 </Text>
               )}
 
-              {dia.programacoes.map(
-                (programacao, index) => (
-                  <View
-                    key={`${dia.data}-${index}`}
-                    style={styles.card}
-                  >
-                    <Text style={styles.nomeReuniao}>
-                      {programacao.tipo_reuniao.nome}
+              {dia.programacoes.map((programacao, index) => (
+                <View key={`${dia.data}-${index}`} style={styles.card}>
+                  <Text style={styles.nomeReuniao}>
+                    {programacao.tipo_reuniao.nome}
+                  </Text>
+
+                  <Text style={styles.horario}>
+                    {programacao.hora_inicio} - {programacao.hora_fim}
+                  </Text>
+
+                  {programacao.tipo_reuniao.descricao && (
+                    <Text style={styles.descricao}>
+                      {programacao.tipo_reuniao.descricao}
                     </Text>
+                  )}
 
-                    <Text style={styles.horario}>
-                      {programacao.hora_inicio} -{' '}
-                      {programacao.hora_fim}
-                    </Text>
+                  <View style={styles.detalhes}>
+                    <Text style={styles.detalhe}>{programacao.modalidade}</Text>
 
-                    {programacao.tipo_reuniao
-                      .descricao && (
-                      <Text style={styles.descricao}>
-                        {
-                          programacao.tipo_reuniao
-                            .descricao
-                        }
-                      </Text>
-                    )}
-
-                    <View style={styles.detalhes}>
-                      <Text style={styles.detalhe}>
-                        {programacao.modalidade}
-                      </Text>
-
-                      {programacao.local && (
-                        <Text style={styles.detalhe}>
-                          {programacao.local}
-                        </Text>
-                      )}
-                    </View>
-
-                    {programacao.link && (
-                      <Pressable
-                        style={styles.botaoLink}
-                        onPress={() => {
-                          // Vamos implementar a abertura
-                          // do link na próxima etapa.
-                        }}
-                      >
-                        <Text style={styles.textoLink}>
-                          Acessar reunião →
-                        </Text>
-                      </Pressable>
+                    {programacao.local && (
+                      <Text style={styles.detalhe}>{programacao.local}</Text>
                     )}
                   </View>
-                ),
-              )}
+
+                  {programacao.link && (
+                    <Pressable
+                      style={styles.botaoLink}
+                      onPress={() => {
+                        // Vamos implementar a abertura
+                        // do link na próxima etapa.
+                      }}>
+                      <Text style={styles.textoLink}>Acessar reunião →</Text>
+                    </Pressable>
+                  )}
+                </View>
+              ))}
             </View>
           ))}
       </ScrollView>
@@ -245,22 +208,31 @@ const styles = StyleSheet.create({
   },
 
   botaoVoltar: {
-    marginBottom: 20,
+    position: 'absolute',
+
+    top: 0,
+    bottom: 40,
+    borderRadius: 12,
+    padding: 8,
+    backgroundColor: '#e4dffcff',
   },
 
   textoVoltar: {
-    color: '#7C6BC4',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
+    color: '#7C6BC4',
   },
 
   titulo: {
+    top: 40,
     fontSize: 30,
     fontWeight: '800',
     color: '#242424',
   },
 
   subtitulo: {
+    top: 30,
+    bottom: 40,
     fontSize: 16,
     color: '#777',
     marginTop: 8,

@@ -11,6 +11,7 @@ import { router } from 'expo-router'
 
 import { Estudo, buscarEstudos } from '../../servicos/estudos'
 import { useToast } from '../../contextos/ToastContext'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 export default function EstudosScreen() {
   const [estudos, setEstudos] = useState<Estudo[]>([])
@@ -56,7 +57,15 @@ export default function EstudosScreen() {
       <Pressable style={styles.botaoVoltar} onPress={voltar}>
         <Text style={styles.textoVoltar}>‹ Voltar</Text>
       </Pressable>
-      <Text style={styles.titulo}>Estudos</Text>
+      <Text style={styles.titulo}>
+        <MaterialCommunityIcons
+          name="book"
+          size={40}
+          marginHorizontal={8}
+          color="#e0b0d4ff"
+        />
+        Estudos
+      </Text>
 
       <FlatList
         data={estudos}

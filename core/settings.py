@@ -48,6 +48,7 @@ SIMPLE_JWT = {
 }
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -64,6 +65,65 @@ INSTALLED_APPS = [
     "metricas",
     "estudos",
 ]
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Colcha de Retalhos",
+    "site_header": "Colcha de Retalhos",
+    "site_brand": "Colcha de Retalhos",
+    "site_logo": "admin/img/logo.png",
+    "login_logo": "admin/img/logo.png",
+
+    "welcome_sign": "Bem-vindo ao Colcha de Retalhos",
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "custom_css": "admin/css/colcha.css",
+
+    "show_theme_chooser": True,
+
+    "icons": {
+        "auth.user": "fas fa-user",
+        "auth.group": "fas fa-users-cog",
+
+        "usuarios.user": "fas fa-users",
+        "usuarios.perfil": "fas fa-user-circle",
+
+        "reunioes.tiporeuniao": "fas fa-calendar-alt",
+        "reunioes.programacaoreuniao": "fas fa-calendar-check",
+
+        "reflexoes.reflexaodiaria": "fas fa-book-open",
+
+        "estudos.estudo": "fas fa-book",
+
+        "metricas.controleconsumo": "fas fa-chart-line",
+        "metricas.historicoconsumo": "fas fa-history",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "default",
+
+    "default_theme_mode": "light",
+
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+
+    "no_navbar_border": False,
+
+    "navbar_fixed": False,
+    "sidebar_fixed": False,
+    "footer_fixed": False,
+
+    "sidebar_nav_small_text": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+   
+}
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -147,7 +207,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "core" / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Email

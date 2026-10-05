@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Pressable,
 } from 'react-native'
 
 import {
@@ -12,9 +13,10 @@ import {
   buscarUsuarios,
   Usuario,
 } from '../../servicos/usuarios'
-
+import { router } from 'expo-router'
 import { useAuth } from '../../contextos/AuthContext'
 import { useToast } from '../../contextos/ToastContext'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 export default function PessoasScreen() {
   const { usuario } = useAuth()
@@ -40,10 +42,7 @@ export default function PessoasScreen() {
     } catch (error) {
       console.error('ERRO AO CARREGAR PESSOAS:', error)
 
-      mostrarToast(
-        'Não foi possível carregar as pessoas.',
-        'erro',
-      )
+      mostrarToast('Não foi possível carregar as pessoas.', 'erro')
     } finally {
       setCarregando(false)
     }
@@ -60,6 +59,7 @@ export default function PessoasScreen() {
   if (!usuario?.is_staff && perfil) {
     return (
       <View style={styles.container}>
+        <MaterialCommunityIcons name="account" size={40} color="#242424" />
         <Text style={styles.titulo}>Meu perfil</Text>
 
         <View style={styles.card}>
@@ -67,13 +67,9 @@ export default function PessoasScreen() {
             {perfil.first_name} {perfil.last_name}
           </Text>
 
-          <Text style={styles.campo}>
-            Usuário: {perfil.username}
-          </Text>
+          <Text style={styles.campo}>Usuário: {perfil.username}</Text>
 
-          <Text style={styles.campo}>
-            E-mail: {perfil.email}
-          </Text>
+          <Text style={styles.campo}>E-mail: {perfil.email}</Text>
 
           <Text style={styles.campo}>
             Telefone: {perfil.perfil?.telefone || 'Não informado'}
@@ -82,9 +78,7 @@ export default function PessoasScreen() {
           <Text
             style={[
               styles.status,
-              perfil.perfil?.ativo
-                ? styles.statusAtivo
-                : styles.statusInativo,
+              perfil.perfil?.ativo ? styles.statusAtivo : styles.statusInativo,
             ]}>
             {perfil.perfil?.ativo ? 'Ativo' : 'Inativo'}
           </Text>
@@ -92,11 +86,24 @@ export default function PessoasScreen() {
       </View>
     )
   }
+  function voltar() {
+    router.back()
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Pessoas</Text>
-
+      <Pressable style={styles.botaoVoltar} onPress={voltar}>
+        <Text style={styles.textoVoltar}>‹ Voltar</Text>
+      </Pressable>
+      <Text style={styles.titulo}>
+        <MaterialCommunityIcons
+          name="account-group"
+          size={40}
+          marginHorizontal={8}
+          color="#e0b0d4ff"
+        />
+        Participantes
+      </Text>
       <FlatList
         data={usuarios}
         keyExtractor={(item) => String(item.id)}
@@ -108,13 +115,9 @@ export default function PessoasScreen() {
               {item.first_name} {item.last_name}
             </Text>
 
-            <Text style={styles.campo}>
-              Usuário: {item.username}
-            </Text>
+            <Text style={styles.campo}>Usuário: {item.username}</Text>
 
-            <Text style={styles.campo}>
-              E-mail: {item.email}
-            </Text>
+            <Text style={styles.campo}>E-mail: {item.email}</Text>
 
             <Text style={styles.campo}>
               Telefone: {item.perfil?.telefone || 'Não informado'}
@@ -131,11 +134,7 @@ export default function PessoasScreen() {
                 {item.perfil?.ativo ? 'Ativo' : 'Inativo'}
               </Text>
 
-              {item.is_staff && (
-                <Text style={styles.admin}>
-                  Administrador
-                </Text>
-              )}
+              {item.is_staff && <Text style={styles.admin}>Administrador</Text>}
             </View>
           </View>
         )}
@@ -163,6 +162,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#222',
     marginBottom: 20,
+    marginTop: 40,
   },
 
   lista: {
@@ -232,5 +232,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 12,
     fontWeight: '700',
+  },
+  botaoVoltar: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    borderRadius: 12,
+    padding: 8,
+    backgroundColor: '#e4dffcff',
+  },
+
+  textoVoltar: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#7C6BC4',
   },
 })

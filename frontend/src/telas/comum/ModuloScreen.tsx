@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 12,
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffe4f8ff',
   },
 
   textoVoltar: {

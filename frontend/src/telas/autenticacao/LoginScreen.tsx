@@ -10,7 +10,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
-
+import { Image } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { MotiText, MotiView } from 'moti'
 import { router } from 'expo-router'
@@ -32,10 +32,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!username.trim() || !password) {
-      mostrarToast(
-        'Informe usuário e senha.',
-        'erro',
-      )
+      mostrarToast('Informe usuário e senha.', 'erro')
 
       return
     }
@@ -43,29 +40,17 @@ export default function LoginScreen() {
     try {
       setCarregando(true)
 
-      await login(
-        username.trim(),
-        password,
-      )
+      await login(username.trim(), password)
 
-      mostrarToast(
-        'Login realizado com sucesso.',
-        'sucesso',
-      )
+      mostrarToast('Login realizado com sucesso.', 'sucesso')
 
       router.replace('/inicio')
     } catch (erro) {
       const apiError = getApiError(erro)
 
-      console.log(
-        'Erro no login:',
-        apiError,
-      )
+      console.log('Erro no login:', apiError)
 
-      mostrarToast(
-        apiError.message,
-        'erro',
-      )
+      mostrarToast(apiError.message, 'erro')
     } finally {
       setCarregando(false)
     }
@@ -73,24 +58,13 @@ export default function LoginScreen() {
 
   return (
     <LinearGradient
-      colors={[
-        cores.rosaClaro,
-        '#F7F4FC',
-        cores.azulClaro,
-      ]}
+      colors={[cores.rosaClaro, '#F7F4FC', cores.azulClaro]}
       locations={[0, 0.48, 1]}
-      style={styles.container}
-    >
+      style={styles.container}>
       <KeyboardAvoidingView
         style={styles.teclado}
-        behavior={
-          Platform.OS === 'ios'
-            ? 'padding'
-            : undefined
-        }
-      >
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.conteudo}>
-
           {/* Logo / título */}
 
           <MotiView
@@ -108,12 +82,12 @@ export default function LoginScreen() {
               type: 'spring',
               duration: 900,
             }}
-            style={styles.cabecalho}
-          >
+            style={styles.cabecalho}>
             <View style={styles.logo}>
-              <Text style={styles.logoTexto}>
-                CR
-              </Text>
+              <Image
+                source={require('../../../assets/images/logo.png')}
+                style={styles.logoImagem}
+              />
             </View>
 
             <MotiText
@@ -128,8 +102,7 @@ export default function LoginScreen() {
               transition={{
                 delay: 250,
               }}
-              style={styles.titulo}
-            >
+              style={styles.titulo}>
               Colcha de Retalhos
             </MotiText>
 
@@ -143,10 +116,8 @@ export default function LoginScreen() {
               transition={{
                 delay: 450,
               }}
-              style={styles.subtitulo}
-            >
-              Um espaço para compartilhar,
-              acolher e caminhar juntos.
+              style={styles.subtitulo}>
+              Um espaço para compartilhar, acolher e caminhar juntos.
             </MotiText>
           </MotiView>
 
@@ -166,35 +137,24 @@ export default function LoginScreen() {
               type: 'timing',
               duration: 700,
             }}
-            style={styles.cartao}
-          >
-            <Text style={styles.tituloFormulario}>
-              Bem-vindo
-            </Text>
+            style={styles.cartao}>
+            <Text style={styles.tituloFormulario}>Bem-vindo</Text>
 
-            <Text style={styles.textoFormulario}>
-              Entre para continuar
-            </Text>
+            <Text style={styles.textoFormulario}>Entre para continuar</Text>
 
             {/* Usuário */}
 
             <View style={styles.grupo}>
-              <Text style={styles.label}>
-                Usuário
-              </Text>
+              <Text style={styles.label}>Usuário</Text>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.icone}>
-                  @
-                </Text>
+                <Text style={styles.icone}>@</Text>
 
                 <TextInput
                   value={username}
                   onChangeText={setUsername}
                   placeholder="Digite seu usuário"
-                  placeholderTextColor={
-                    cores.textoSecundario
-                  }
+                  placeholderTextColor={cores.textoSecundario}
                   autoCapitalize="none"
                   autoCorrect={false}
                   editable={!carregando}
@@ -206,39 +166,25 @@ export default function LoginScreen() {
             {/* Senha */}
 
             <View style={styles.grupo}>
-              <Text style={styles.label}>
-                Senha
-              </Text>
+              <Text style={styles.label}>Senha</Text>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.icone}>
-                  •
-                </Text>
+                <Text style={styles.icone}>•</Text>
 
                 <TextInput
                   value={password}
                   onChangeText={setPassword}
                   placeholder="Digite sua senha"
-                  placeholderTextColor={
-                    cores.textoSecundario
-                  }
+                  placeholderTextColor={cores.textoSecundario}
                   secureTextEntry={!mostrarSenha}
                   autoCapitalize="none"
                   editable={!carregando}
                   style={styles.input}
                 />
 
-                <Pressable
-                  onPress={() =>
-                    setMostrarSenha(
-                      (valor) => !valor,
-                    )
-                  }
-                >
+                <Pressable onPress={() => setMostrarSenha((valor) => !valor)}>
                   <Text style={styles.mostrarSenha}>
-                    {mostrarSenha
-                      ? 'Ocultar'
-                      : 'Mostrar'}
+                    {mostrarSenha ? 'Ocultar' : 'Mostrar'}
                   </Text>
                 </Pressable>
               </View>
@@ -251,62 +197,33 @@ export default function LoginScreen() {
                 scale: 0.96,
               }}
               animate={{
-                scale: carregando
-                  ? 0.98
-                  : 1,
+                scale: carregando ? 0.98 : 1,
               }}
               transition={{
                 type: 'timing',
                 duration: 150,
-              }}
-            >
+              }}>
               <Pressable
                 onPress={handleLogin}
                 disabled={carregando}
-                style={[
-                  styles.botao,
-                  carregando &&
-                    styles.botaoDesabilitado,
-                ]}
-              >
+                style={[styles.botao, carregando && styles.botaoDesabilitado]}>
                 {carregando ? (
                   <View style={styles.carregando}>
-                    <ActivityIndicator
-                      color={cores.branco}
-                    />
+                    <ActivityIndicator color={cores.branco} />
 
-                    <Text
-                      style={styles.textoBotao}
-                    >
-                      Entrando...
-                    </Text>
+                    <Text style={styles.textoBotao}>Entrando...</Text>
                   </View>
                 ) : (
-                  <Text
-                    style={styles.textoBotao}
-                  >
-                    Entrar
-                  </Text>
+                  <Text style={styles.textoBotao}>Entrar</Text>
                 )}
               </Pressable>
 
               <Pressable
-                onPress={() =>
-                  router.push('/cadastro')
-                }
-                style={styles.botaoCadastro}
-              >
-                <Text
-                  style={styles.textoCadastro}
-                >
+                onPress={() => router.push('/cadastro')}
+                style={styles.botaoCadastro}>
+                <Text style={styles.textoCadastro}>
                   Não possui uma conta?{' '}
-                  <Text
-                    style={
-                      styles.destaqueCadastro
-                    }
-                  >
-                    Criar cadastro
-                  </Text>
+                  <Text style={styles.destaqueCadastro}>Criar cadastro</Text>
                 </Text>
               </Pressable>
             </MotiView>
@@ -324,11 +241,9 @@ export default function LoginScreen() {
             transition={{
               delay: 1000,
             }}
-            style={styles.rodape}
-          >
+            style={styles.rodape}>
             Colcha de Retalhos © 2026
           </MotiText>
-
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -367,19 +282,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
 
-    backgroundColor:
-      'rgba(255,255,255,0.72)',
+    backgroundColor: 'rgba(255,255,255,0.72)',
 
     borderWidth: 1,
     borderColor: cores.borda,
 
     marginBottom: 16,
-  },
-
-  logoTexto: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: cores.preto,
   },
 
   titulo: {
@@ -403,8 +311,7 @@ const styles = StyleSheet.create({
   // =========================
 
   cartao: {
-    backgroundColor:
-      'rgba(255,255,255,0.78)',
+    backgroundColor: 'rgba(255,255,255,0.78)',
 
     borderRadius: 26,
 
@@ -489,6 +396,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#7770B8',
   },
+  logoImagem: {
+    width: 140,
+    height: 140,
+    resizeMode: 'contain',
+  },
 
   // =========================
   // BOTÃO
@@ -519,8 +431,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
 
-    backgroundColor:
-      'rgba(255,255,255,0.55)',
+    backgroundColor: 'rgba(255,255,255,0.55)',
 
     borderWidth: 1,
     borderColor: '#7C6BC4',
